@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-VERSION = "0.0.0.1"
+VERSION = "0.0.0.1.3"
 DESCRIPTION = ""
 LONG_DESCRIPTION = (
     "used to combine all tt predictors in one class"

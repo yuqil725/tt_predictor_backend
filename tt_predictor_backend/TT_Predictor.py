@@ -9,16 +9,28 @@ from model_data_util.create_tt_data.model_data_convert import convertModelToRawD
 from tensorflow.keras import Sequential
 from tensorflow.keras.layers import Dense
 
-from constant import PREDICTOR_TREE
-
 
 class TTPredictor:
-    def __init__(self, predictor_tree=PREDICTOR_TREE, env=None):
+    def __init__(self, predictor_tree_path="/content/drive/MyDrive/TT Predictor Tree", env=None):
         if env is None:
             self.env = check_env_info()
         else:
             self.env = env
-        self.predictor_tree = predictor_tree
+
+        self.predictor_tree = {}
+        self.create_predictor_tree(predictor_tree_path)
+
+    def create_predictor_tree(self, predictor_tree_path):
+        for f in os.listdir(predictor_tree_path):
+            if f[0] == ".":
+                continue
+            if f not in self.predictor_tree.keys():
+                self.predictor_tree[f] = {}
+            for m_fn in os.listdir(os.path.join(predictor_tree_path, f)):
+                if m_fn.split("_")[0] not in self.predictor_tree[f].keys():
+                    self.predictor_tree[f][m_fn.split("_")[0]] = {}
+                self.predictor_tree[f][m_fn.split("_")[0]][m_fn.split("_")[1]] = os.path.join(predictor_tree_path, f,
+                                                                                              m_fn)
 
     def validate_env(self):
         _env_pass = True if "_".join(sorted(self.env.values())).lower() in self.predictor_tree else False
@@ -102,6 +114,7 @@ if __name__ == "__main__":
                 'gpu_type': 'tesla_v100-sxm2',
                 'tf_v': '2.4.1'}
 
-    tt_predictor = TTPredictor(env=fake_env)
+    predictor_tree_path = "/Users/wangqiong/Documents/AIpaca/Code/TT Prediction/tt_predictor_backend/tt_predictor_backend/tt_predictor_tree"
+    tt_predictor = TTPredictor(env=fake_env, predictor_tree_path=predictor_tree_path)
     tt_pred = tt_predictor.predict(model, np.array((1000, 5)), kwargs)
     print(f"TT Prediction = {tt_pred}")
