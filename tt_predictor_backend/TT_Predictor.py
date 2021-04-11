@@ -17,6 +17,7 @@ class TTPredictor:
         else:
             self.env = env
 
+        self.last_model_path: str
         self.predictor_tree = {}
         self.create_predictor_tree(predictor_tree_path)
 
@@ -69,6 +70,8 @@ class TTPredictor:
             print("not in the supporting feature list:")
             pprint(unsupport_feature_level)
             return ""
+
+        self.last_model_path = tt_predictor_path
         return tt_predictor_path
 
     def load_model(self, path):
